@@ -1,0 +1,16 @@
+#!/bin/bash
+## SALIR DEL MODO VFIO Y RECUPERAR TODAS LAS COSAS (ESCRITORIO, DISPOSITIVOS...)
+## FECHA: 9 de febrero de 2022
+
+export IGPU_PCILOC=0000:00:02.0
+export IGPU_PCIID="8086 5916"
+#export DefaultGVTMODE=1
+
+## RECOLOCAR CADA DISPOSITIVO CON SU DRIVER
+
+echo $IGPU_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+echo $IGPU_PCILOC > /sys/bus/pci/drivers/i915/bind
+
+## POSYASTAH EL ESCRITORIO FUNCANDO
+
+service lightdm start #SIGO SIENDO NOSTÁLGICO DEL SYSVINIT
