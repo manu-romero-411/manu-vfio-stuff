@@ -32,7 +32,7 @@ qemu-system-x86_64 \
 -device vfio-pci,host=$PCILOC_MEMCONT \
 -device vfio-pci,host=$PCILOC_ISA \
 -device vfio-pci,host=$PCILOC_SMBUS \
--device vfio-pci,host=$PCILOC_NVIDIA \
+-device vfio-pci,host=$PCILOC_NVIDIA,romfile="$OVMF/nvidia.rom" \
 -device vfio-pci,host=$PCILOC_AUDIO2 \
 -fw_cfg name=etc/igd-opregion,file="$OVMF/opregion.bin" \
 -fw_cfg name=etc/igd-bdsm-size,file="$OVMF/bdsmSize.bin" \
@@ -40,6 +40,6 @@ qemu-system-x86_64 \
 -device usb-kbd \
 -device usb-tablet \
 -usb \
--device usb-host,hostbus=1,hostaddr=14 \
--device usb-host,hostbus=1,hostaddr=15 \
+-device usb-host,hostbus=1,hostaddr=6 \
+-device usb-host,hostbus=1,hostaddr=7 \
 -drive file=/pcgrande/Virtualizaciones/win10/win10.qcow2,format=qcow2,l2-cache-size=8M
