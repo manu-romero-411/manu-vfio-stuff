@@ -91,11 +91,11 @@ i915 Message: setOutputPath(415)DUsing Connector Mode: 3, On Port 0i915 Message:
 20 20 20 20 00 00 00 FE 
 00 42 31 35 36 58 54 4E 
 30 34 2E 36 20 0A 00 53 
-i915 Message: i915ControllerDriverStart(626)bar ranges - 810000000 1000000, 800000000 10000000
+i915 Message: i915ControllerDriverStart(626)bar ranges - 822000000 1000000, 800000000 10000000
 i915 Message: i915ControllerDriverStart(634)aperture at 800000000
 i915 Message: i915ControllerDriverStart(642)i915: gmadr = 00000000, size = 00000000, hgmadr = 00000000, hsize = 00000000
 i915 Message: i915ControllerDriverStart(664)1366x768 clock=78200
-i915 Message: i915ControllerDriverStart(680)i915: ggtt_base at 810800000, entries: 7E0F000B 7E0F000B, backing fb: 7DBF0000, 408000 bytes
+i915 Message: i915ControllerDriverStart(680)i915: ggtt_base at 822800000, entries: 7F4E0001 7F4E0001, backing fb: 77F36000, 4000000 bytes
 i915 Message: i915ControllerDriverStart(716)progressed to mline 717, status is 0
 i915 Message: setDisplayGraphicsMode(497)set mode 0
 i915 Message: SetupClockeDP(788)DPLL 1 not locked
@@ -376,5 +376,7 @@ i915 Message: i915GraphicsOutputQueryMode(33)i915: query mode
 i915 Message: i915GraphicsOutputQueryMode(33)i915: query mode
 i915 Message: i915GraphicsOutputQueryMode(33)i915: query mode
 i915 Message: i915GraphicsOutputQueryMode(33)i915: query mode
-[2J[01;01H[=3h[2J[01;01H[0m[35m[40m[0m[37m[40mBdsDxe: loading Boot0001 "UEFI QEMU HARDDISK QM00001 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0)
+[2J[01;01H[=3h[2J[01;01H[0m[35m[40m[2J[01;01H[=3h[2J[01;01H[0m[37m[40m[0m[35m[40m[0m[35m[40m[0m[37m[40m[0m[37m[40mBdsDxe: loading Boot0001 "UEFI QEMU HARDDISK QM00001 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0)
+BdsDxe: loading Boot0001 "UEFI QEMU HARDDISK QM00001 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0)
+BdsDxe: starting Boot0001 "UEFI QEMU HARDDISK QM00001 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0)
 BdsDxe: starting Boot0001 "UEFI QEMU HARDDISK QM00001 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0)

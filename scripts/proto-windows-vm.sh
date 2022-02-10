@@ -4,6 +4,12 @@
 
 OVMF=../i915ovmf-archivos ## CAMBIAR SEGÚN CONVENGA
 PCILOC_IGPU=0000:00:02.0
+PCILOC_AUDIO1=0000:00:1f.3
+PCILOC_ISA=0000:00:1f.0
+PCILOC_MEMCONT=0000:00:1f.2
+PCILOC_SMBUS=0000:00:1f.4
+PCILOC_NVIDIA=0000:01:00.0
+PCILOC_AUDIO2=0000:01:00.1
 
 qemu-system-x86_64 \
 -k en-us \
@@ -22,12 +28,18 @@ qemu-system-x86_64 \
 -netdev user,id=n0 -device rtl8139,netdev=n0 \
 -bios "$OVMF/OVMF_CODE.fd" \
 -device vfio-pci,host=$PCILOC_IGPU,romfile="$OVMF/i915ovmf.rom" \
+-device vfio-pci,host=$PCILOC_AUDIO1 \
+-device vfio-pci,host=$PCILOC_MEMCONT \
+-device vfio-pci,host=$PCILOC_ISA \
+-device vfio-pci,host=$PCILOC_SMBUS \
+-device vfio-pci,host=$PCILOC_NVIDIA \
+-device vfio-pci,host=$PCILOC_AUDIO2 \
 -fw_cfg name=etc/igd-opregion,file="$OVMF/opregion.bin" \
 -fw_cfg name=etc/igd-bdsm-size,file="$OVMF/bdsmSize.bin" \
 -device qemu-xhci,p2=8,p3=8 \
 -device usb-kbd \
 -device usb-tablet \
 -usb \
--device usb-host,hostbus=1,hostaddr=10 \
--device usb-host,hostbus=1,hostaddr=11 \
+-device usb-host,hostbus=1,hostaddr=14 \
+-device usb-host,hostbus=1,hostaddr=15 \
 -drive file=/pcgrande/Virtualizaciones/win10/win10.qcow2,format=qcow2,l2-cache-size=8M
