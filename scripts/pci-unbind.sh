@@ -35,8 +35,8 @@ echo $AUDIO1_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id # chip de sonido princ
 echo $PUENTEISA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
 echo $MEMCONT_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
 echo $SMBUS_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-echo $NVIDIA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-echo $AUDIO2_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
+#echo $NVIDIA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
+#echo $AUDIO2_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
 
 ## PASAR LOS DISPOSITIVOS (GRÁFICAS INTEL Y NVIDIA, SONIDO, TECLADO, RATÓN Y MANDO) AL DRIVER vfio-pci
 
@@ -55,9 +55,9 @@ echo $SMBUS_PCILOC > /sys/bus/pci/drivers/i801_smbus/unbind
 echo $SMBUS_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
 
 ### gráfica Nvidia (0000:01:00.0) - grupo iommu 11
-echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/unbind
-echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/unbind
-echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
+#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/unbind
+#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
+#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/unbind
+#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
 
 

@@ -28,10 +28,10 @@ echo $MEMCONT_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
 echo $PUENTEISA_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
 
 ### gráfica Nvidia
-echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
-echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/bind
-echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
-echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/bind
+#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/bind
+#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/bind
 
 ## POSYASTAH EL ESCRITORIO FUNCANDO
 
