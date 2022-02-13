@@ -1,0 +1,2 @@
+SUBSYSTEM=="usb", ACTION=="add", RUN+="/bin/bash -c 'python3 /opt/vfio-hotplugger/hotplugger.py'"
+SUBSYSTEM=="usb", ACTION=="remove", RUN+="/bin/bash -c 'python3 /opt/vfio-hotplugger/hotplugger.py'"
