@@ -23,7 +23,7 @@ function mensaje(){
 }
 
 mensaje "ℹ️ Escaneando dispositivos USB pasables a la máquina virtual"
-source $OVMF/listaUSB.sh
+source $ROOTDIR/listaUSB.sh
 
 echo ${QEMU_USB_ARGS[@]}
 
@@ -31,7 +31,7 @@ if ! $ROOTDIR/usbUmount.sh $SILENTMODE; then
 	mensaje "❌️ Al haber dispositivos USB que no pueden ser desmontados, no podemos seguir. F."
 	exit 1
 fi
-
+source $ROOTDIR/archivos.sh
 args=(
 	-m "$RAM"
 	-cpu 'host,kvm=off,hv_vendor_id=null'
@@ -42,23 +42,19 @@ args=(
 	-nodefaults
 	-rtc base=localtime,driftfix=slew
 	-no-hpet
-#	-netdev user,id=n0 -device rtl8139,netdev=n0
-	-display gtk,gl=off -full-screen
+    -netdev bridge,br=virbr0,id=net0
+    -device vmxnet3,netdev=net0,id=net0,mac=52:54:00:c9:18:27
+	-display gtk,gl=off
 	-vga qxl
-	-drive if=pflash,format=raw,readonly=on,file="/usr/share/OVMF/OVMF_CODE.nv.fd"
-	-drive if=pflash,format=raw,file="/var/lib/libvirt/qemu/nvram/win10_VARS.fd"
-	#-device pcie-root-port,port=0x10,chassis=1,id=pci.1,bus=pcie.0,multifunction=on,addr=0x1
- 	#-device vfio-pci,host=$PCILOC_NVIDIA,bus=pci.1,multifunction=on,addr=0x0,rombar=0,x-pci-vendor-id=0x10de,x-pci-device-id=0x1299,x-pci-sub-vendor-id=0x1043,x-pci-sub-device-id=0x18d0
-	-acpitable file="/usr/share/qemu/ssdt1.dat"
-	-fw_cfg name=etc/igd-opregion,file="$OVMF/opregion.bin"
-	-fw_cfg name=etc/igd-bdsm-size,file="$OVMF/bdsmSize.bin"
+## BIOS Y ACPI Y TO ESO
+	-drive if=pflash,format=raw,readonly=on,file="$OVMF_CODE"
+	-drive if=pflash,format=raw,file="$OVMF_VARS"
+	-fw_cfg name=etc/igd-opregion,file="$OVMF_OPREG"
+	-fw_cfg name=etc/igd-bdsm-size,file="$OVMF_BDSM"
+	-acpitable file="$SSDT_BATERIAFALSA"
 	-device qemu-xhci,p2=8,p3=8
 	-device usb-kbd
 	-device usb-tablet
-#	-drive file=/pcgrande/Virtualizaciones/win10/win10.qcow2,format=qcow2,l2-cache-size=8M
-#	-object input-linux,id=kbd,evdev="/dev/input/by-path/platform-i8042-serio-0-event-kbd",grab_all=y
-#	-device virtio-input-host-pci,id=input1,evdev="/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-event-mouse"
-#	-device virtio-input-host-pci,id=mouse,evdev="/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-mouse"
 	-cdrom /home/manuel/Escritorio/ubuntu-20.04.3-desktop-amd64.iso
 	-chardev socket,id=mon1,server=on,wait=off,path=$OVMF/qmp-sock
 	-mon chardev=mon1,mode=control,pretty=on

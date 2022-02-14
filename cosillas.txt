@@ -9,3 +9,15 @@ options kvm report_ignored_msrs=0
 sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
 sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
 sudo update-initramfs -u
+
+# RED PUENTEADA
+
+/etc/network/interfaces
+
+auto br0
+iface br0 inet dhcp
+  bridge_ports DEVICENAME tap0
+
+auto tap0
+iface tap0 inet dhcp
+  pre-up tunctl -u MYUSERNAME -t tap0
