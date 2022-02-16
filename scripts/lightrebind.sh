@@ -29,16 +29,16 @@ export PCIID_I2C2="8086 9d61"
 ## RECOLOCAR CADA DISPOSITIVO CON SU DRIVER
 
 ### gráfica integrada
-echo $IGPU_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
-echo $IGPU_PCILOC > /sys/bus/pci/drivers/i915/bind
+#echo $IGPU_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $IGPU_PCILOC > /sys/bus/pci/drivers/i915/bind
 
 ### chip de sonido principal
-echo $AUDIO1_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
-echo $AUDIO1_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/bind
-echo $SMBUS_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
-echo $SMBUS_PCILOC > /sys/bus/pci/drivers/i801_smbus/bind
-echo $MEMCONT_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
-echo $PUENTEISA_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $AUDIO1_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $AUDIO1_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/bind
+#echo $SMBUS_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $SMBUS_PCILOC > /sys/bus/pci/drivers/i801_smbus/bind
+#echo $MEMCONT_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
+#echo $PUENTEISA_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
 
 ### gráfica Nvidia
 #echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/unbind
@@ -55,4 +55,4 @@ echo $PCILOC_I2C2 > /sys/bus/pci/drivers/intel-lpss/bind
 
 ## POSYASTAH EL ESCRITORIO FUNCANDO
 
-service lightdm start #SIGO SIENDO NOSTÁLGICO DEL SYSVINIT
+#service lightdm start #SIGO SIENDO NOSTÁLGICO DEL SYSVINIT

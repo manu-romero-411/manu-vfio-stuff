@@ -30,41 +30,12 @@ export PCIID_I2C2="8086 9d61"
 
 ## CERRAR LO GRÁFICO (TODO: CERRAR SESIÓN DE CINNAMON/XFCE/GNOME DE FORMA CORRECTA, POR SI SE RAYA LUEGO)
 
-service lightdm stop
 
 ## DECIRLE A vfio-pci QUE LOS DISPOSITIVOS TALES VAN ENTRAR EN GRUPOS IOMMU
-
-echo $IGPU_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id # gráfica integrada (8086 5916)
-echo $AUDIO1_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id # chip de sonido principal (8086 9d71)
-echo $PUENTEISA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-echo $MEMCONT_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-echo $SMBUS_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-#echo $NVIDIA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-#echo $AUDIO2_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
 echo $PCIID_I2C1 > /sys/bus/pci/drivers/vfio-pci/new_id
 echo $PCIID_I2C2 > /sys/bus/pci/drivers/vfio-pci/new_id
 
 ## PASAR LOS DISPOSITIVOS (GRÁFICAS INTEL Y NVIDIA, SONIDO, TECLADO, RATÓN Y MANDO) AL DRIVER vfio-pci
-
-### gráfica integrada (0000:00:02.0) - grupo iommu 14 Kappa
-echo $IGPU_PCILOC > /sys/bus/pci/drivers/i915/unbind
-echo $IGPU_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-
-### chip de sonido principal (0000:00:1f.3) - grupo iommu 10
-echo $AUDIO1_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/unbind
-echo $AUDIO1_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-#echo $PUENTEISA_PCILOC >
-echo $PUENTEISA_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-#echo $MEMCONT_PCILOC >
-echo $MEMCONT_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-echo $SMBUS_PCILOC > /sys/bus/pci/drivers/i801_smbus/unbind
-echo $SMBUS_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-
-### gráfica Nvidia (0000:01:00.0) - grupo iommu 11
-#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/unbind
-#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/unbind
-#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
 
 ### dispositivos i2c (touchpad)
 echo $PCILOC_I2C1 > /sys/bus/pci/drivers/intel-lpss/unbind

@@ -15,6 +15,8 @@ PCILOC_MEMCONT=0000:00:1f.2
 PCILOC_SMBUS=0000:00:1f.4
 PCILOC_NVIDIA=0000:01:00.0
 PCILOC_AUDIO2=0000:01:00.1
+export PCILOC_I2C1=0000:00:15.0
+export PCILOC_I2C2=0000:00:15.1
 
 function mensaje(){
 	if [[ "$SILENTMODE" != "-s" ]]; then
@@ -54,7 +56,9 @@ args=(
 	-acpitable file="$SSDT_BATERIAFALSA"
 	-device qemu-xhci,p2=8,p3=8
 	-device usb-kbd
-	-device usb-tablet
+	-device usb-mouse
+	-device virtio-input-host-pci,id=input1,evdev="/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-event-mouse"
+	-device virtio-input-host-pci,id=mouse,evdev="/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-mouse"
 	-cdrom /home/manuel/Escritorio/ubuntu-20.04.3-desktop-amd64.iso
 	-chardev socket,id=mon1,server=on,wait=off,path=$OVMF/qmp-sock
 	-mon chardev=mon1,mode=control,pretty=on

@@ -14,6 +14,8 @@ PCILOC_MEMCONT=0000:00:1f.2
 PCILOC_SMBUS=0000:00:1f.4
 PCILOC_NVIDIA=0000:01:00.0
 PCILOC_AUDIO2=0000:01:00.1
+PCILOC_I2C1=0000:00:15.0
+PCILOC_I2C2=0000:00:15.1
 
 function mensaje(){
 	if [[ "$SILENTMODE" != "-s" ]]; then
@@ -21,10 +23,10 @@ function mensaje(){
 	fi
 }
 
-mensaje "ℹ️ Escaneando dispositivos USB pasables a la máquina virtual"
+mensaje "ℹ️  Escaneando dispositivos USB pasables a la máquina virtual"
 source $ROOTDIR/listaUSB.sh
 
-#echo ${QEMU_USB_ARGS[@]}
+echo ${QEMU_USB_ARGS[@]}
 
 if ! $ROOTDIR/usbUmount.sh $SILENTMODE; then
 	mensaje "❌️ Al haber dispositivos USB que no pueden ser desmontados, no podemos seguir. F."
@@ -32,18 +34,16 @@ if ! $ROOTDIR/usbUmount.sh $SILENTMODE; then
 fi
 
 source $ROOTDIR/archivos.sh
-
 args=(
-	-m "$RAM"
-	-cpu 'host,kvm=off,hv_vendor_id=null'
-	-machine type=q35,kernel_irqchip=on,accel=kvm
-	-nographic -vga none
-	-chardev stdio,id=char0,logfile=serial.log,signal=off
-	-nodefaults
-	-rtc base=localtime,driftfix=slew
-	-no-hpet
 
-## BIOS Y ACPI Y TO ESO
+## COSAS BÁSICAS DE LA MÁQUINA VIRTUAL
+	-m "$RAM"
+	-cpu 'host,kvm=off,hv_vendor_id=null,hv_time,hv_relaxed,hv_vapic,hv_spinlocks=0x1fff'
+	-machine type=q35,kernel_irqchip=on,accel=kvm
+	-smp $(nproc)
+	-nographic -vga none
+
+## BIOS VIRTUAL
 	-drive if=pflash,format=raw,readonly=on,file="$OVMF_CODE"
 	-drive if=pflash,format=raw,file="$OVMF_VARS"
 	-fw_cfg name=etc/igd-opregion,file="$OVMF_OPREG"
@@ -53,26 +53,33 @@ args=(
 ## DISPOSITIVOS PCI (PASSTHROUGH)
 	-device pcie-root-port,port=0x10,chassis=1,id=pci.1,bus=pcie.0,multifunction=on,addr=0x1
  	-device vfio-pci,host=$PCILOC_NVIDIA,bus=pci.1,multifunction=on,addr=0x0,rombar=0,x-pci-vendor-id=0x10de,x-pci-device-id=0x1299,x-pci-sub-vendor-id=0x1043,x-pci-sub-device-id=0x18d0
+ 	-device vfio-pci,host=$PCILOC_AUDIO2,bus=pci.1,multifunction=on,addr=0x1,x-pci-vendor-id=0x10de,x-pci-device-id=0x0e0f
 	-device vfio-pci,host=$PCILOC_IGPU,romfile="$INTEL_GVTD_BIOS"
 	-device vfio-pci,host=$PCILOC_AUDIO1
 	-device vfio-pci,host=$PCILOC_MEMCONT
 	-device vfio-pci,host=$PCILOC_ISA
 	-device vfio-pci,host=$PCILOC_SMBUS
-    -netdev bridge,br=virbr0,id=net0 
-    -device e1000-82545em,netdev=net0,id=net0,mac=52:54:00:c9:18:27
+	-device vfio-pci,host=$PCILOC_I2C1
+	-device vfio-pci,host=$PCILOC_I2C2
+
+## ALMACENAMIENTO Y ARCHIVOS ISO
 	-drive file=/pcgrande/Virtualizaciones/win10/win10.qcow2,format=qcow2,l2-cache-size=8M
-	-object input-linux,id=kbd,evdev="/dev/input/by-path/platform-i8042-serio-0-event-kbd",grab_all=y
-	-device virtio-input-host-pci,id=input1,evdev="/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-event-mouse"
-#	-device virtio-input-host-pci,id=mouse,evdev="/dev/input/by-path/pci-0000:00:15.1-platform-i2c_designware.1-mouse"
 	-cdrom /home/manuel/Escritorio/ubuntu-20.04.3-desktop-amd64.iso
-	-chardev socket,id=mon1,server=on,wait=off,path="$HOTPLUG_QMPSOCK"
+
+## PERIFÉRICOS
+	-object input-linux,id=kbd,evdev="/dev/input/by-path/platform-i8042-serio-0-event-kbd",grab_all=y
+	-chardev socket,id=mon1,server=on,wait=off,path=$HOTPLUG_QMPSOCK
 	-mon chardev=mon1,mode=control,pretty=on
 	${QEMU_USB_ARGS[@]}
+
+## RED
+    -netdev bridge,br=virbr0,id=net0
+    -device e1000-82545em,netdev=net0,id=net0,mac=52:54:00:c9:18:27
 )
 
-mensaje "ℹ️ Cerrando el escritorio y dando control de los dispositivos a vfio-pci..."
+mensaje "ℹ️  Cerrando el escritorio y dando control de los dispositivos a vfio-pci..."
 
-mensaje "ℹ️ Ejecutando QEMU/KVM..."
+mensaje "ℹ️  Ejecutando QEMU/KVM..."
 qemu-system-x86_64 "${args[@]}"
 #$VMROOT/pci-rebind.sh
-mensaje "ℹ️ Devolviendo dispositivos al PC y reiniciando el escritorio..."
+mensaje "ℹ️  Devolviendo dispositivos al PC y reiniciando el escritorio..."
