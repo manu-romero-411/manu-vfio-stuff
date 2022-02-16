@@ -12,12 +12,11 @@ sudo update-initramfs -u
 
 # RED PUENTEADA
 
-/etc/network/interfaces
+Montarla con virt-manager. Es más sencillo
 
-auto br0
-iface br0 inet dhcp
-  bridge_ports DEVICENAME tap0
+## LO QUE DEJÉ HECHO EN FEBRERO DE 2022
 
-auto tap0
-iface tap0 inet dhcp
-  pre-up tunctl -u MYUSERNAME -t tap0
+* Abrir ssh desde otro lado
+* pci-unbind
+* vm-windows
+* Cuando se acabe todo, pci-rebind hace volver al escritorio
