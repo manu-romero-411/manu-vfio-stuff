@@ -12,6 +12,8 @@ export MEMCONT_PCILOC=0000:00:1f.2
 export SMBUS_PCILOC=0000:00:1f.4
 export NVIDIA_PCILOC=0000:01:00.0
 export AUDIO2_PCILOC=0000:01:00.1
+export PCILOC_I2C1=0000:00:15.0
+export PCILOC_I2C2=0000:00:15.1
 
 ## PCIIDs
 export IGPU_PCIID="8086 5916"
@@ -21,6 +23,8 @@ export MEMCONT_PCIID="8086 9d21"
 export SMBUS_PCIID="8086 9d23"
 export NVIDIA_PCIID="10de 1299"
 export AUDIO2_PCIID="10de 0e0f"
+export PCIID_I2C1="8086 9d60"
+export PCIID_I2C2="8086 9d61"
 
 #export DefaultGVTMODE=1
 
@@ -35,8 +39,10 @@ echo $AUDIO1_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id # chip de sonido princ
 echo $PUENTEISA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
 echo $MEMCONT_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
 echo $SMBUS_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-echo $NVIDIA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
-echo $AUDIO2_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
+#echo $NVIDIA_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
+#echo $AUDIO2_PCIID > /sys/bus/pci/drivers/vfio-pci/new_id
+echo $PCIID_I2C1 > /sys/bus/pci/drivers/vfio-pci/new_id
+echo $PCIID_I2C2 > /sys/bus/pci/drivers/vfio-pci/new_id
 
 ## PASAR LOS DISPOSITIVOS (GRÁFICAS INTEL Y NVIDIA, SONIDO, TECLADO, RATÓN Y MANDO) AL DRIVER vfio-pci
 
@@ -55,9 +61,15 @@ echo $SMBUS_PCILOC > /sys/bus/pci/drivers/i801_smbus/unbind
 echo $SMBUS_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
 
 ### gráfica Nvidia (0000:01:00.0) - grupo iommu 11
-echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/unbind
-echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
-echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/unbind
-echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
+#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/nouveau/unbind
+#echo $NVIDIA_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
+#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/snd_hda_intel/unbind
+#echo $AUDIO2_PCILOC > /sys/bus/pci/drivers/vfio-pci/bind
+
+### dispositivos i2c (touchpad)
+echo $PCILOC_I2C1 > /sys/bus/pci/drivers/intel-lpss/unbind
+echo $PCILOC_I2C1 > /sys/bus/pci/drivers/vfio-pci/bind
+echo $PCILOC_I2C2 > /sys/bus/pci/drivers/intel-lpss/unbind
+echo $PCILOC_I2C2 > /sys/bus/pci/drivers/vfio-pci/bind
 
 

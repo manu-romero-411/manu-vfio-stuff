@@ -1,0 +1,212 @@
++ export IGPU_PCILOC=0000:00:02.0
++ IGPU_PCILOC=0000:00:02.0
++ export AUDIO1_PCILOC=0000:00:1f.3
++ AUDIO1_PCILOC=0000:00:1f.3
++ export PUENTEISA_PCILOC=0000:00:1f.0
++ PUENTEISA_PCILOC=0000:00:1f.0
++ export MEMCONT_PCILOC=0000:00:1f.2
++ MEMCONT_PCILOC=0000:00:1f.2
++ export SMBUS_PCILOC=0000:00:1f.4
++ SMBUS_PCILOC=0000:00:1f.4
++ export NVIDIA_PCILOC=0000:01:00.0
++ NVIDIA_PCILOC=0000:01:00.0
++ export AUDIO2_PCILOC=0000:01:00.1
++ AUDIO2_PCILOC=0000:01:00.1
++ export 'IGPU_PCIID=8086 5916'
++ IGPU_PCIID='8086 5916'
++ export 'AUDIO1_PCIID=8086 9d71'
++ AUDIO1_PCIID='8086 9d71'
++ export 'PUENTEISA_PCIID=8086 9d58'
++ PUENTEISA_PCIID='8086 9d58'
++ export 'MEMCONT_PCIID=8086 9d21'
++ MEMCONT_PCIID='8086 9d21'
++ export 'SMBUS_PCIID=8086 9d23'
++ SMBUS_PCIID='8086 9d23'
++ export 'NVIDIA_PCIID=10de 1299'
++ NVIDIA_PCIID='10de 1299'
++ export 'AUDIO2_PCIID=10de 0e0f'
++ AUDIO2_PCIID='10de 0e0f'
++ service lightdm stop
++ echo 8086 5916
++ echo 8086 9d71
++ echo 8086 9d58
++ echo 8086 9d21
++ echo 8086 9d23
++ echo 0000:00:02.0
++ echo 0000:00:02.0
++ echo 0000:00:1f.3
++ echo 0000:00:1f.3
++ echo 0000:00:1f.0
+/pcgrande/Desarrollo/vfio-pcgrande/scripts/pci-unbind.sh: línea 51: echo: error de escritura: No existe el dispositivo
++ echo 0000:00:1f.2
+/pcgrande/Desarrollo/vfio-pcgrande/scripts/pci-unbind.sh: línea 53: echo: error de escritura: No existe el dispositivo
++ echo 0000:00:1f.4
++ echo 0000:00:1f.4
+qemu-system-x86_64: -fw_cfg name=etc/igd-opregion,file=../i915ovmf-archivos/opregion.bin: warning: externally provided fw_cfg item names should be prefixed with "opt/"
+qemu-system-x86_64: -fw_cfg name=etc/igd-bdsm-size,file=../i915ovmf-archivos/bdsmSize.bin: warning: externally provided fw_cfg item names should be prefixed with "opt/"
+qemu-system-x86_64: -device vfio-pci,host=0000:00:02.0,romfile=../i915ovmf-archivos/i915ovmf.rom: IGD device 0000:00:02.0 cannot support legacy mode due to existing devices at address 1f.0
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.4, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.0, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.2, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.3, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.4, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.0, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.2, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.3, no available reset mechanism.
++ export IGPU_PCILOC=0000:00:02.0
++ IGPU_PCILOC=0000:00:02.0
++ export AUDIO1_PCILOC=0000:00:1f.3
++ AUDIO1_PCILOC=0000:00:1f.3
++ export PUENTEISA_PCILOC=0000:00:1f.0
++ PUENTEISA_PCILOC=0000:00:1f.0
++ export MEMCONT_PCILOC=0000:00:1f.2
++ MEMCONT_PCILOC=0000:00:1f.2
++ export SMBUS_PCILOC=0000:00:1f.4
++ SMBUS_PCILOC=0000:00:1f.4
++ export NVIDIA_PCILOC=0000:01:00.0
++ NVIDIA_PCILOC=0000:01:00.0
++ export AUDIO2_PCILOC=0000:01:00.1
++ AUDIO2_PCILOC=0000:01:00.1
++ export 'IGPU_PCIID=8086 5916'
++ IGPU_PCIID='8086 5916'
++ export 'AUDIO1_PCIID=8086 9d71'
++ AUDIO1_PCIID='8086 9d71'
++ export 'PUENTEISA_PCIID=8086 9d58'
++ PUENTEISA_PCIID='8086 9d58'
++ export 'MEMCONT_PCIID=8086 9d21'
++ MEMCONT_PCIID='8086 9d21'
++ export 'SMBUS_PCIID=8086 9d23'
++ SMBUS_PCIID='8086 9d23'
++ export 'NVIDIA_PCIID=10de 1299'
++ NVIDIA_PCIID='10de 1299'
++ export 'AUDIO2_PCIID=10de 0e0f'
++ AUDIO2_PCIID='10de 0e0f'
++ service lightdm stop
++ echo 8086 5916
++ echo 8086 9d71
++ echo 8086 9d58
++ echo 8086 9d21
++ echo 8086 9d23
++ echo 0000:00:02.0
++ echo 0000:00:02.0
++ echo 0000:00:1f.3
++ echo 0000:00:1f.3
++ echo 0000:00:1f.0
+/pcgrande/Desarrollo/vfio-pcgrande/scripts/pci-unbind.sh: línea 51: echo: error de escritura: No existe el dispositivo
++ echo 0000:00:1f.2
+/pcgrande/Desarrollo/vfio-pcgrande/scripts/pci-unbind.sh: línea 53: echo: error de escritura: No existe el dispositivo
++ echo 0000:00:1f.4
++ echo 0000:00:1f.4
+qemu-system-x86_64: -fw_cfg name=etc/igd-opregion,file=../i915ovmf-archivos/opregion.bin: warning: externally provided fw_cfg item names should be prefixed with "opt/"
+qemu-system-x86_64: -fw_cfg name=etc/igd-bdsm-size,file=../i915ovmf-archivos/bdsmSize.bin: warning: externally provided fw_cfg item names should be prefixed with "opt/"
+qemu-system-x86_64: -device vfio-pci,host=0000:00:02.0,romfile=../i915ovmf-archivos/i915ovmf.rom: IGD device 0000:00:02.0 cannot support legacy mode due to existing devices at address 1f.0
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.4, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.0, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.2, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.3, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.4, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.0, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.2, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.3, no available reset mechanism.
+qemu-system-x86_64: terminating on signal 15 from pid 39593 (killall)
++ export IGPU_PCILOC=0000:00:02.0
++ IGPU_PCILOC=0000:00:02.0
++ export AUDIO1_PCILOC=0000:00:1f.3
++ AUDIO1_PCILOC=0000:00:1f.3
++ export PUENTEISA_PCILOC=0000:00:1f.0
++ PUENTEISA_PCILOC=0000:00:1f.0
++ export MEMCONT_PCILOC=0000:00:1f.2
++ MEMCONT_PCILOC=0000:00:1f.2
++ export SMBUS_PCILOC=0000:00:1f.4
++ SMBUS_PCILOC=0000:00:1f.4
++ export NVIDIA_PCILOC=0000:01:00.0
++ NVIDIA_PCILOC=0000:01:00.0
++ export AUDIO2_PCILOC=0000:01:00.1
++ AUDIO2_PCILOC=0000:01:00.1
++ echo 0000:00:02.0
++ echo 0000:00:02.0
++ echo 0000:00:1f.3
++ echo 0000:00:1f.3
++ echo 0000:00:1f.4
++ echo 0000:00:1f.4
++ echo 0000:00:1f.2
++ echo 0000:00:1f.0
++ service lightdm start
++ export IGPU_PCILOC=0000:00:02.0
++ IGPU_PCILOC=0000:00:02.0
++ export AUDIO1_PCILOC=0000:00:1f.3
++ AUDIO1_PCILOC=0000:00:1f.3
++ export PUENTEISA_PCILOC=0000:00:1f.0
++ PUENTEISA_PCILOC=0000:00:1f.0
++ export MEMCONT_PCILOC=0000:00:1f.2
++ MEMCONT_PCILOC=0000:00:1f.2
++ export SMBUS_PCILOC=0000:00:1f.4
++ SMBUS_PCILOC=0000:00:1f.4
++ export NVIDIA_PCILOC=0000:01:00.0
++ NVIDIA_PCILOC=0000:01:00.0
++ export AUDIO2_PCILOC=0000:01:00.1
++ AUDIO2_PCILOC=0000:01:00.1
++ export 'IGPU_PCIID=8086 5916'
++ IGPU_PCIID='8086 5916'
++ export 'AUDIO1_PCIID=8086 9d71'
++ AUDIO1_PCIID='8086 9d71'
++ export 'PUENTEISA_PCIID=8086 9d58'
++ PUENTEISA_PCIID='8086 9d58'
++ export 'MEMCONT_PCIID=8086 9d21'
++ MEMCONT_PCIID='8086 9d21'
++ export 'SMBUS_PCIID=8086 9d23'
++ SMBUS_PCIID='8086 9d23'
++ export 'NVIDIA_PCIID=10de 1299'
++ NVIDIA_PCIID='10de 1299'
++ export 'AUDIO2_PCIID=10de 0e0f'
++ AUDIO2_PCIID='10de 0e0f'
++ service lightdm stop
++ echo 8086 5916
++ echo 8086 9d71
++ echo 8086 9d58
++ echo 8086 9d21
++ echo 8086 9d23
++ echo 0000:00:02.0
++ echo 0000:00:02.0
++ echo 0000:00:1f.3
++ echo 0000:00:1f.3
++ echo 0000:00:1f.0
+/pcgrande/Desarrollo/vfio-pcgrande/scripts/pci-unbind.sh: línea 51: echo: error de escritura: No existe el dispositivo
++ echo 0000:00:1f.2
+/pcgrande/Desarrollo/vfio-pcgrande/scripts/pci-unbind.sh: línea 53: echo: error de escritura: No existe el dispositivo
++ echo 0000:00:1f.4
++ echo 0000:00:1f.4
+qemu-system-x86_64: -fw_cfg name=etc/igd-opregion,file=../i915ovmf-archivos/opregion.bin: warning: externally provided fw_cfg item names should be prefixed with "opt/"
+qemu-system-x86_64: -fw_cfg name=etc/igd-bdsm-size,file=../i915ovmf-archivos/bdsmSize.bin: warning: externally provided fw_cfg item names should be prefixed with "opt/"
+qemu-system-x86_64: -device vfio-pci,host=0000:00:02.0,romfile=../i915ovmf-archivos/i915ovmf.rom: IGD device 0000:00:02.0 cannot support legacy mode due to existing devices at address 1f.0
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.4, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.0, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.2, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.3, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.4, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.0, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.2, no available reset mechanism.
+qemu-system-x86_64: vfio: Cannot reset device 0000:00:1f.3, no available reset mechanism.
++ export IGPU_PCILOC=0000:00:02.0
++ IGPU_PCILOC=0000:00:02.0
++ export AUDIO1_PCILOC=0000:00:1f.3
++ AUDIO1_PCILOC=0000:00:1f.3
++ export PUENTEISA_PCILOC=0000:00:1f.0
++ PUENTEISA_PCILOC=0000:00:1f.0
++ export MEMCONT_PCILOC=0000:00:1f.2
++ MEMCONT_PCILOC=0000:00:1f.2
++ export SMBUS_PCILOC=0000:00:1f.4
++ SMBUS_PCILOC=0000:00:1f.4
++ export NVIDIA_PCILOC=0000:01:00.0
++ NVIDIA_PCILOC=0000:01:00.0
++ export AUDIO2_PCILOC=0000:01:00.1
++ AUDIO2_PCILOC=0000:01:00.1
++ echo 0000:00:02.0
++ echo 0000:00:02.0
++ echo 0000:00:1f.3
++ echo 0000:00:1f.3
++ echo 0000:00:1f.4
++ echo 0000:00:1f.4
++ echo 0000:00:1f.2
++ echo 0000:00:1f.0
++ service lightdm start
