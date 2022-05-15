@@ -1,0 +1,5 @@
+#!/bin/bash
+# MAJARE SI FUERA ASÍ DE FÁCIL HACER GPUS DE VERDAD KAPPA
+
+sudo modprobe kvmgt mdev vfio-iommu-type1
+sudo su -c "echo 'af5972fb-5530-41a7-0000-fd836204445b' > /sys/devices/pci0000:00/0000:00:02.0/mdev_supported_types/i915-GVTg_V5_4/create"

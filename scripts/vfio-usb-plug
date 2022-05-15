@@ -1,0 +1,6 @@
+#!/bin/bash
+
+## PENDIENTE: MODELAR ESTO PARA QUE PERMITA OTRAS REGLAS UDEV, OTRAS MÁQUINAS...
+if virsh list | grep retrobox | grep running; then
+	virsh attach-device retrobox /usr/local/etc/mandoXboxOne.xml
+fi

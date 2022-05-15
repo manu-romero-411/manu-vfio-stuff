@@ -1,0 +1,6 @@
+<hostdev mode='subsystem' type='usb'>
+	<source startupPolicy='optional'>
+		<vendor id='0x248a'/>
+		<product id='0x8366'/>
+	</source>                                                                                      
+</hostdev>

@@ -1,0 +1,20 @@
+#!/bin/bash
+shopt -s nullglob
+CONTADOR=0
+
+([[ -z "${1}" ]] || [[ "${1}" == "-a" ]]) && aa="-a"
+for g in `find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V`; do
+	if [[ $1 == ${g##*/} ]] || [[ $aa == "-a" ]]; then
+		[[ "${2}" != "-c" ]] && echo "IOMMU Group ${g##*/}:"
+		for d in $g/devices/*; do
+			if [[ "${2}" != "-c" ]]; then
+				echo -e "\t$(lspci -nnks ${d##*/})"
+				echo " "
+			fi
+			CONTADOR=$(( $CONTADOR + 1 ))
+		done;
+	fi
+done
+if [[ "${2}" == "-c" ]]; then
+	echo $CONTADOR
+fi

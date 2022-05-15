@@ -1,0 +1,44 @@
+#!/bin/bash
+## UNBIND Y REBIND DE DISPOSITIVOS A vfio-pci, BASADO EN ARCHIVOS DE CONFIG
+## FECHA: 14 de mayo de 2022
+case $1 in
+	igpu) GRUPOIOMMU=1 ;;
+	usb) GRUPOIOMMU=3 ;;
+	audio) GRUPOIOMMU=10 ;;
+	dgpu) GRUPOIOMMU=11 ;;
+	*) exit 1;;
+esac
+
+source /usr/local/etc/vfio-devices/vfio-$GRUPOIOMMU.conf
+if [[ $2 == "-u" ]]; then
+#if [ $(vfio-iommugrupos $GRUPOIOMMU | grep vfio-pci | wc -l) -lt $(vfio-iommugrupos $GRUPOIOMMU -c) ]; then
+	## GRÁFICA INTEGRADA: CERRAR SESIÓN GRÁFICA
+	[ $GRUPOIOMMU -eq 1 ] && systemctl stop display-manager.service
+	[ $GRUPOIOMMU -eq 10 ] && killall pulseaudio
+
+	## UNBIND
+	cont=0
+	while [ $cont -lt ${#group_id[@]} ]; do
+		echo ${group_id[cont]} > "/sys/bus/pci/drivers/vfio-pci/new_id"
+		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/${group_mod[cont]}/unbind"
+		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/vfio-pci/bind"
+		cont=$(($cont+1))
+		sleep 0.1
+        done
+	[ $GRUPOIOMMU -eq 1 ] && sleep 2 ## le damos tiempo por si debe liberar memoria
+elif [[ $2 == "-r" ]]; then
+	[ $GRUPOIOMMU -eq 1 ] && sleep 2
+	## REBIND
+	cont=0
+	while [ $cont -lt ${#group_id[@]} ]; do
+                echo ${group_loc[cont]} > "/sys/bus/pci/drivers/vfio-pci/unbind"
+		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/${group_mod[cont]}/bind"
+		echo ${group_id[cont]} > "/sys/bus/pci/drivers/vfio-pci/remove_id"
+		cont=$(($cont+1))
+		sleep 0.1
+        done
+
+	## GRÁFICA INTEGRADA: INICIAR SESIÓN GRÁFICA
+	[ $GRUPOIOMMU -eq 1 ] && systemctl start display-manager.service
+fi
+exit 0
