@@ -1,0 +1,29 @@
+[source]
+name=QEMU System
+type=libvirt
+uri=qemu+unix:///system
+save-on-quit=false
+
+[display 76bbe13a-de29-48f3-9c8d-89f1e6e67177]
+last-seen-name=ubuntu
+uuid=76bbe13a-de29-48f3-9c8d-89f1e6e67177
+
+[display 49be6a37-6a5d-4b8c-a94b-1f06d26d02a1]
+last-seen-name=chromeOS
+uuid=49be6a37-6a5d-4b8c-a94b-1f06d26d02a1
+
+[display da3e3f4c-c1f7-485a-a44e-e02708d7609c]
+last-seen-name=win10
+uuid=da3e3f4c-c1f7-485a-a44e-e02708d7609c
+
+[display 961c5bc6-006e-4d7f-889a-91deb373478b]
+last-seen-name=retrobox
+uuid=961c5bc6-006e-4d7f-889a-91deb373478b
+
+[display d678b2a2-4c6b-403c-bb82-48441654f663]
+last-seen-name=android
+uuid=d678b2a2-4c6b-403c-bb82-48441654f663
+
+[display 2aca0dd6-cec9-4717-9ab2-0b7b13d111c3]
+last-seen-name=macOS
+uuid=2aca0dd6-cec9-4717-9ab2-0b7b13d111c3
