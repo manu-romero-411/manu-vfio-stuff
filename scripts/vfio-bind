@@ -13,7 +13,9 @@ source /usr/local/etc/vfio-devices/vfio-$GRUPOIOMMU.conf
 if [[ $2 == "-u" ]]; then
 #if [ $(vfio-iommugrupos $GRUPOIOMMU | grep vfio-pci | wc -l) -lt $(vfio-iommugrupos $GRUPOIOMMU -c) ]; then
 	## GRÁFICA INTEGRADA: CERRAR SESIÓN GRÁFICA
-	[ $GRUPOIOMMU -eq 1 ] && systemctl stop display-manager.service
+	if [ $GRUPOIOMMU -eq 1 ]; then
+		systemctl stop display-manager.service
+	fi
 	[ $GRUPOIOMMU -eq 10 ] && killall pulseaudio
 
 	## UNBIND
@@ -39,6 +41,7 @@ elif [[ $2 == "-r" ]]; then
         done
 
 	## GRÁFICA INTEGRADA: INICIAR SESIÓN GRÁFICA
+	grep "vfio=" /proc/cmdline && init 0
 	[ $GRUPOIOMMU -eq 1 ] && systemctl start display-manager.service
 fi
 exit 0

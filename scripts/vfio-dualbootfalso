@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if grep vfio=$1 /proc/cmdline; then
+	echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/unbind
+	virsh start $1
+fi
+

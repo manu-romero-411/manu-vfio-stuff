@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if pidof xfce4-session; then
+	xfce4-session-logout -lf
+fi
+XFCESESSION=1
+while [ $XFCESESSION != 0 ]; do
+	if ! pidof xfce4-session; then
+		XFCESESSION=0
+	fi
+	sleep 0.5
+done
+echo "=== Iniciando $1 -- $(date '+%a %d/%m/%Y %H:%M:%S') ==="
+virsh start $1
