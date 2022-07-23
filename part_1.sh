@@ -56,7 +56,7 @@ echo "kvmgt" >> /etc/modules
 update-initramfs -u
 
 #Copiar archivos necesarios (bios, etc) a su carpeta
-cp -r $rootdir/archivos /home/$USUARIO/.libvirt
+#cp -r $rootdir/archivos /home/$USUARIO/.libvirt
 
 #Configuración de qemu para apparmor
 cp $rootdir/qemu.conf /etc/libvirt/qemu.conf

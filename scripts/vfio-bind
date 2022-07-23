@@ -10,11 +10,24 @@ case $1 in
 esac
 
 source /usr/local/etc/vfio-devices/vfio-$GRUPOIOMMU.conf
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help"  ]]; then
+        echo "PROYECTO VFIO - Script de unbinding-rebinding de dispositivos"
+        echo "USO: "
+        echo "* \"igpu\",\"usb\",\"audio\",\"dgpu\": hacer unbind/rebind de los dispositivos que se indiquen"
+        echo "* -u: unbind (antes de iniciar la máquina virtual)"
+        echo "* -r: rebind (después de apagar la máquina virtual)"
+        exit 1
+fi
 if [[ $2 == "-u" ]]; then
 #if [ $(vfio-iommugrupos $GRUPOIOMMU | grep vfio-pci | wc -l) -lt $(vfio-iommugrupos $GRUPOIOMMU -c) ]; then
 	## GRÁFICA INTEGRADA: CERRAR SESIÓN GRÁFICA
 	if [ $GRUPOIOMMU -eq 1 ]; then
+		cat /sys/class/backlight/intel_backlight/brightness > /tmp/brilloPantalla
 		systemctl stop display-manager.service
+                sleep 1
+                for i in $(lsof | grep i915 | cut -d " " -f 1 | tr "\n" " "); do
+                        killall $i
+                done
 	fi
 	[ $GRUPOIOMMU -eq 10 ] && killall pulseaudio
 
@@ -42,6 +55,9 @@ elif [[ $2 == "-r" ]]; then
 
 	## GRÁFICA INTEGRADA: INICIAR SESIÓN GRÁFICA
 	grep "vfio=" /proc/cmdline && init 0
-	[ $GRUPOIOMMU -eq 1 ] && systemctl start display-manager.service
+	if [ $GRUPOIOMMU -eq 1 ]; then
+		cat /tmp/brilloPantalla > /sys/class/backlight/intel_backlight/brightness
+		systemctl start display-manager.service
+	fi
 fi
 exit 0

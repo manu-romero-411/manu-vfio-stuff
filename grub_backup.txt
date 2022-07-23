@@ -4,9 +4,10 @@
 #   info -f grub -n 'Simple configuration'
 
 GRUB_DEFAULT=0
-GRUB_TIMEOUT_STYLE=hidden
-GRUB_TIMEOUT=10
-GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+#GRUB_TIMEOUT_STYLE=hidden
+GRUB_TIMEOUT=5
+#GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+GRUB_DISTRIBUTOR="Xubuntu"
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
 GRUB_CMDLINE_LINUX=""
 
@@ -31,3 +32,4 @@ GRUB_CMDLINE_LINUX=""
 
 # Uncomment to get a beep at grub start
 #GRUB_INIT_TUNE="480 440 1"
+GRUB_THEME=/boot/grub/grub-theme-fadefusion/theme.txt

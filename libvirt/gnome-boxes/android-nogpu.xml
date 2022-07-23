@@ -1,0 +1,114 @@
+<domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0" type="kvm">
+  <name>android-nogpu</name>
+  <uuid>893b04bf-5afb-41f3-bb97-f84b419d4006</uuid>
+  <title>android-nogpu</title>
+  <metadata>
+    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+      <libosinfo:os id="http://android-x86.org/android-x86/9.0"/>
+    </libosinfo:libosinfo>
+  </metadata>
+  <memory unit="KiB">8388608</memory>
+  <currentMemory unit="KiB">8388608</currentMemory>
+  <vcpu placement="static">4</vcpu>
+  <os>
+    <type arch="x86_64" machine="pc-i440fx-6.2">hvm</type>
+    <boot dev="hd"/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <vmport state="off"/>
+  </features>
+  <cpu mode="host-passthrough" check="none" migratable="on"/>
+  <clock offset="utc">
+    <timer name="rtc" tickpolicy="catchup"/>
+    <timer name="pit" tickpolicy="delay"/>
+    <timer name="hpet" present="no"/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled="no"/>
+    <suspend-to-disk enabled="no"/>
+  </pm>
+  <devices>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2"/>
+      <source file="/pcgrande/Virtualizaciones/qcow-pool/manuvfio-android.qcow2"/>
+      <target dev="vda" bus="virtio"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x06" function="0x0"/>
+    </disk>
+    <controller type="usb" index="0" model="qemu-xhci" ports="15">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"/>
+    </controller>
+    <controller type="pci" index="0" model="pci-root"/>
+    <controller type="virtio-serial" index="0">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x04" function="0x0"/>
+    </controller>
+    <interface type="user">
+      <mac address="52:54:00:e9:46:c1"/>
+      <model type="virtio"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    </interface>
+    <serial type="pty">
+      <target type="isa-serial" port="0">
+        <model name="isa-serial"/>
+      </target>
+    </serial>
+    <console type="pty">
+      <target type="serial" port="0"/>
+    </console>
+    <channel type="unix">
+      <target type="virtio" name="org.qemu.guest_agent.0"/>
+      <address type="virtio-serial" controller="0" bus="0" port="1"/>
+    </channel>
+    <channel type="spicevmc">
+      <target type="virtio" name="com.redhat.spice.0"/>
+      <address type="virtio-serial" controller="0" bus="0" port="2"/>
+    </channel>
+    <input type="mouse" bus="ps2"/>
+    <input type="keyboard" bus="ps2"/>
+    <graphics type="spice">
+      <listen type="none"/>
+      <image compression="off"/>
+      <gl enable="no"/>
+    </graphics>
+    <sound model="ich9">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x0b" function="0x0"/>
+    </sound>
+    <audio id="1" type="spice"/>
+    <video>
+      <model type="virtio" heads="1" primary="yes">
+        <acceleration accel3d="no"/>
+      </model>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x02" function="0x0"/>
+    </video>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="2"/>
+    </redirdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="3"/>
+    </redirdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="1"/>
+    </redirdev>
+    <memballoon model="virtio">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x08" function="0x0"/>
+    </memballoon>
+    <rng model="virtio">
+      <backend model="random">/dev/urandom</backend>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x09" function="0x0"/>
+    </rng>
+  </devices>
+  <qemu:commandline>
+    <qemu:arg value="-device"/>
+    <qemu:arg value="usb-tablet"/>
+    <qemu:arg value="-device"/>
+    <qemu:arg value="usb-kbd"/>
+    <qemu:arg value="-cpu"/>
+    <qemu:arg value="host,kvm=on,vendor=GenuineIntel"/>
+  </qemu:commandline>
+</domain>
+
