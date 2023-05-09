@@ -23,7 +23,7 @@ chmod +x uninstall.sh
 
 #After the backup has been created, add intel_iommu=on kvm.ignore_msrs=1 i915.enable_gvt=1
 # to GRUB variable
-GRUB+=" intel_iommu=on video=vesafb:off kvm.ignore_msrs=1 i915.enable_gvt=1 i915.enable_guc=0 i915.enable_psr=0 vfio_pci.ids=10de:1299,10de:0e0f\""
+GRUB+=" intel_iommu=on video=vesafb:off kvm.ignore_msrs=1 i915.enable_gvt=1 i915.enable_guc=0 vfio_pci.ids=10de:1299,10de:0e0f nogpumanager\""
 sed -i -e "s|^GRUB_CMDLINE_LINUX_DEFAULT.*|${GRUB}|" /etc/default/grub
 
 #User verification of new grub and prompt to manually edit it

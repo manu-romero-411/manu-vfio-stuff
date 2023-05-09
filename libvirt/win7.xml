@@ -1,6 +1,7 @@
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
-  <name>android</name>
-  <uuid>a5bff40c-8a70-4cd4-9d61-8c99a59c36ea</uuid>
+  <name>win7</name>
+  <uuid>b48a68c0-ae1b-46e0-b459-ce2ccc6ee123</uuid>
+  <title>win7</title>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://microsoft.com/win/7"/>
@@ -40,9 +41,15 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/pcgrande/Sistemos/qcow-pool/manuvfio-chromeos.qcow2'/>
+      <source file='/pcgrande/Sistemos/qcow-pool/manuvfio_win7.img'/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source file='/pcgrande/Sistemos/qcow-pool/manuvfio_win7_games.img'/>
+      <target dev='vdb' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
     </disk>
     <controller type='pci' index='0' model='pci-root'/>
     <controller type='virtio-serial' index='0'>
@@ -58,7 +65,7 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:bb:5e:ae'/>
+      <mac address='52:54:00:24:b3:c1'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>

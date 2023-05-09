@@ -1,0 +1,28 @@
+#!/bin/bash
+## SCRIPT PARA PREPARAR GUEST EN MODO VFIO
+## FECHA: 9 de mayo de 2023
+
+if [ -z $1 ]; then
+	exit 1
+fi
+
+function intel_gpu(){
+	cat /tmp/brilloPantalla > /sys/class/backlight/intel_backlight/brightness
+	systemctl start display-manager.service
+}
+
+VFIO_CONF_DEV_DIR="/usr/local/etc/vfio/devices/$1"
+
+for i in $VFIO_CONF_DEV_DIR/*; do
+	grep "vfio=" /proc/cmdline && init 6 # ¿FUTURA IMPLEMENTACIÓN DEL DUAL-BOOT FALSO?
+	source $i
+
+        echo "0000:$BUS:$SLOT.$FUNC" > "/sys/bus/pci/drivers/vfio-pci/unbind"
+	echo "0000:$BUS:$SLOT.$FUNC" > "/sys/bus/pci/drivers/$DRIVER/bind"
+	echo "$VENDOR $DEVICE" > "/sys/bus/pci/drivers/vfio-pci/remove_id"
+
+	if [[ "$DRIVER" == "i915" ]]; then
+		intel_gpu
+	fi
+
+done

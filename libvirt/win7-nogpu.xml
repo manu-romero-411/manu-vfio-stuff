@@ -1,6 +1,6 @@
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
-  <name>android</name>
-  <uuid>a5bff40c-8a70-4cd4-9d61-8c99a59c36ea</uuid>
+  <name>win7-nogpu</name>
+  <uuid>c8cc6e8c-63a4-4b3d-8eef-da6d7e2b0fca</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://microsoft.com/win/7"/>
@@ -40,9 +40,15 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/pcgrande/Sistemos/qcow-pool/manuvfio-chromeos.qcow2'/>
+      <source file='/pcgrande/Sistemos/qcow-pool/manuvfio_win7.img'/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source file='/pcgrande/Sistemos/qcow-pool/manuvfio_win7_games.img'/>
+      <target dev='vdb' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
     </disk>
     <controller type='pci' index='0' model='pci-root'/>
     <controller type='virtio-serial' index='0'>
@@ -58,57 +64,30 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:bb:5e:ae'/>
+      <mac address='52:54:00:74:d3:25'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </interface>
+    <channel type='spicevmc'>
+      <target type='virtio' name='com.redhat.spice.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
+    <graphics type='spice' autoport='yes'>
+      <listen type='address'/>
+      <image compression='off'/>
+      <gl enable='no'/>
+    </graphics>
+    <sound model='ich6'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
+    </sound>
     <audio id='1' type='spice'/>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
-      </source>
-      <rom bar='off' file='/home/manuel/.libvirt/intelHDgraphics620.rom'/>
+    <video>
+      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x1f' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1e' function='0x0' multifunction='on'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1e' function='0x2'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x1f' function='0x3'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1e' function='0x3'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x1f' function='0x4'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1e' function='0x4'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x14' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x14' function='0x0' multifunction='on'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x00' slot='0x14' function='0x2'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x14' function='0x2'/>
-    </hostdev>
+    </video>
     <redirdev bus='usb' type='spicevmc'>
       <address type='usb' bus='0' port='2'/>
     </redirdev>
@@ -120,19 +99,10 @@
     </memballoon>
   </devices>
   <qemu:commandline>
-    <qemu:arg value='-nodefaults'/>
-    <qemu:arg value='-vga'/>
-    <qemu:arg value='none'/>
     <qemu:arg value='-chardev'/>
     <qemu:arg value='stdio,id=seabios'/>
-    <qemu:arg value='-set'/>
-    <qemu:arg value='device.hostdev0.x-igd-opregion=on'/>
-    <qemu:arg value='-set'/>
-    <qemu:arg value='device.hostdev0.x-igd-gms=1'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='isa-debugcon,iobase=0x402,chardev=seabios'/>
-    <qemu:arg value='-object'/>
-    <qemu:arg value='input-linux,id=kbd,evdev=/dev/input/by-path/platform-i8042-serio-0-event-kbd,grab_all=y,repeat=on'/>
   </qemu:commandline>
 </domain>
 

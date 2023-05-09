@@ -1,0 +1,64 @@
+#!/bin/bash
+## UNBIND Y REBIND DE DISPOSITIVOS A vfio-pci, BASADO EN ARCHIVOS DE CONFIG
+## FECHA: 14 de mayo de 2022
+case $1 in
+	igpu) GRUPOIOMMU=1 ;;
+	usb) GRUPOIOMMU=3 ;;
+	audio) GRUPOIOMMU=10 ;;
+	dgpu) GRUPOIOMMU=11 ;;
+	touchpad) GRUPOIOMMU=4 ;;
+	*) exit 1;;
+esac
+
+source /usr/local/etc/vfio/devices/vfio-$GRUPOIOMMU.conf
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help"  ]]; then
+        echo "PROYECTO VFIO - Script de unbinding-rebinding de dispositivos"
+        echo "USO: "
+        echo "* \"igpu\",\"usb\",\"audio\",\"dgpu\": hacer unbind/rebind de los dispositivos que se indiquen"
+        echo "* -u: unbind (antes de iniciar la máquina virtual)"
+        echo "* -r: rebind (después de apagar la máquina virtual)"
+        exit 1
+fi
+if [[ $2 == "-u" ]]; then
+#if [ $(vfio-iommugrupos $GRUPOIOMMU | grep vfio-pci | wc -l) -lt $(vfio-iommugrupos $GRUPOIOMMU -c) ]; then
+	## GRÁFICA INTEGRADA: CERRAR SESIÓN GRÁFICA
+	if [ $GRUPOIOMMU -eq 1 ]; then
+		cat /sys/class/backlight/intel_backlight/brightness > /tmp/brilloPantalla
+		systemctl stop display-manager.service
+                sleep 1
+                for i in $(lsof | grep i915 | cut -d " " -f 1 | tr "\n" " "); do
+                        killall $i
+                done
+	fi
+	[ $GRUPOIOMMU -eq 10 ] && killall pulseaudio
+
+	## UNBIND
+	cont=0
+	while [ $cont -lt ${#group_id[@]} ]; do
+		echo ${group_id[cont]} > "/sys/bus/pci/drivers/vfio-pci/new_id"
+		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/${group_mod[cont]}/unbind"
+		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/vfio-pci/bind"
+		cont=$(($cont+1))
+		sleep 0.1
+        done
+	[ $GRUPOIOMMU -eq 1 ] && sleep 2 ## le damos tiempo por si debe liberar memoria
+elif [[ $2 == "-r" ]]; then
+	[ $GRUPOIOMMU -eq 1 ] && sleep 2
+	## REBIND
+	cont=0
+	while [ $cont -lt ${#group_id[@]} ]; do
+                echo ${group_loc[cont]} > "/sys/bus/pci/drivers/vfio-pci/unbind"
+		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/${group_mod[cont]}/bind"
+		echo ${group_id[cont]} > "/sys/bus/pci/drivers/vfio-pci/remove_id"
+		cont=$(($cont+1))
+		sleep 0.1
+        done
+
+	## GRÁFICA INTEGRADA: INICIAR SESIÓN GRÁFICA
+	grep "vfio=" /proc/cmdline && init 0
+	if [ $GRUPOIOMMU -eq 1 ]; then
+		cat /tmp/brilloPantalla > /sys/class/backlight/intel_backlight/brightness
+		systemctl start display-manager.service
+	fi
+fi
+exit 0

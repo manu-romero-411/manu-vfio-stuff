@@ -1,63 +1,112 @@
 #!/bin/bash
-## UNBIND Y REBIND DE DISPOSITIVOS A vfio-pci, BASADO EN ARCHIVOS DE CONFIG
-## FECHA: 14 de mayo de 2022
-case $1 in
-	igpu) GRUPOIOMMU=1 ;;
-	usb) GRUPOIOMMU=3 ;;
-	audio) GRUPOIOMMU=10 ;;
-	dgpu) GRUPOIOMMU=11 ;;
-	*) exit 1;;
-esac
+## NUEVO SCRIPT PARA CONTROLAR PASSTHROUGH EN LIBVIRT
+## FECHA: 9 de mayo de 2023
 
-source /usr/local/etc/vfio-devices/vfio-$GRUPOIOMMU.conf
-if [[ "$1" == "-h" ]] || [[ "$1" == "--help"  ]]; then
-        echo "PROYECTO VFIO - Script de unbinding-rebinding de dispositivos"
-        echo "USO: "
-        echo "* \"igpu\",\"usb\",\"audio\",\"dgpu\": hacer unbind/rebind de los dispositivos que se indiquen"
-        echo "* -u: unbind (antes de iniciar la máquina virtual)"
-        echo "* -r: rebind (después de apagar la máquina virtual)"
-        exit 1
+## VARIABLES
+
+MAQUINA_VM=$1
+BOARD_NAME=$(cat /sys/devices/virtual/dmi/id/board_name)
+NUM_IOMMU=$(ls -1v /sys/kernel/iommu_groups/ | tail -n 1)
+VFIO_CONF_DIR="/usr/local/etc/vfio/"
+VFIO_CONF_VM_DIR="$VFIO_CONF_DIR/qemuhooks"
+
+## FUNCIONES AUXILIARES
+function error(){
+	RED='\033[1;31m'
+	NC='\033[0m'
+	printf "${RED}[ERROR] $@ ${NC}\n"
+}
+
+function info(){
+	BLUE='\033[1;36m'
+	NC='\033[0m'
+	printf "${BLUE}[INFO] $@ ${NC}\n"
+}
+
+function ayuda(){
+	info "USO: $0 [nombre-de-dominio-o-vm] [-p|--prepare|-r|--release]"
+}
+
+function generar_conf(){
+	cp "${VFIO_CONF_VM_DIR}/_sample.conf" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+	sed -i "s#replaceme#${MAQUINA_VM}#g" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+	sed -i "s#replace-me2#${BOARD_NAME}#g" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+	sed -i "s#re-placeme3#${HOSTNAME}#g" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+
+}
+
+## COMPROBACIÓN: DOS ARGUMENTOS
+if [[ $1 == "-h" ]]; then
+	ayuda
+	exit 1
 fi
-if [[ $2 == "-u" ]]; then
-#if [ $(vfio-iommugrupos $GRUPOIOMMU | grep vfio-pci | wc -l) -lt $(vfio-iommugrupos $GRUPOIOMMU -c) ]; then
-	## GRÁFICA INTEGRADA: CERRAR SESIÓN GRÁFICA
-	if [ $GRUPOIOMMU -eq 1 ]; then
-		cat /sys/class/backlight/intel_backlight/brightness > /tmp/brilloPantalla
-		systemctl stop display-manager.service
-                sleep 1
-                for i in $(lsof | grep i915 | cut -d " " -f 1 | tr "\n" " "); do
-                        killall $i
-                done
-	fi
-	[ $GRUPOIOMMU -eq 10 ] && killall pulseaudio
 
-	## UNBIND
-	cont=0
-	while [ $cont -lt ${#group_id[@]} ]; do
-		echo ${group_id[cont]} > "/sys/bus/pci/drivers/vfio-pci/new_id"
-		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/${group_mod[cont]}/unbind"
-		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/vfio-pci/bind"
-		cont=$(($cont+1))
-		sleep 0.1
-        done
-	[ $GRUPOIOMMU -eq 1 ] && sleep 2 ## le damos tiempo por si debe liberar memoria
-elif [[ $2 == "-r" ]]; then
-	[ $GRUPOIOMMU -eq 1 ] && sleep 2
-	## REBIND
-	cont=0
-	while [ $cont -lt ${#group_id[@]} ]; do
-                echo ${group_loc[cont]} > "/sys/bus/pci/drivers/vfio-pci/unbind"
-		echo ${group_loc[cont]} > "/sys/bus/pci/drivers/${group_mod[cont]}/bind"
-		echo ${group_id[cont]} > "/sys/bus/pci/drivers/vfio-pci/remove_id"
-		cont=$(($cont+1))
-		sleep 0.1
-        done
 
-	## GRÁFICA INTEGRADA: INICIAR SESIÓN GRÁFICA
-	grep "vfio=" /proc/cmdline && init 0
-	if [ $GRUPOIOMMU -eq 1 ]; then
-		cat /tmp/brilloPantalla > /sys/class/backlight/intel_backlight/brightness
-		systemctl start display-manager.service
-	fi
+if [ $# -lt 2 ]; then
+	error "Faltan argumentos."
+	ayuda
+	echo ""
+	exit 1
 fi
-exit 0
+
+## COMPROBACIÓN: PREPARE O RELEASE
+VFIO_BIND=-1
+if [[ $2 == "--prepare" ]] || [[ $2 == "-p" ]]; then
+	VFIO_BIND=1
+elif [[ $2 == "--release" ]] || [[ $2 == "-r" ]]; then
+	VFIO_BIND=0
+elif [[ $2 == "-n" ]]; then
+	generar_conf
+	nano "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+	exit 0
+else
+	error "Has puesto $2. Tienes que poner --prepare (-p) o --release (-r) como segundo argumento."
+	ayuda
+	echo ""
+	exit 1
+fi
+
+## COMPROBACIÓN: NOMBRE DE MÁQUINA VIRTUAL CORRECTO
+#if ! virsh --connect qemu:///system list --all --name | grep $1 >/dev/null; then
+#	error "La máquina virtual $1 no existe. Prueba con:"
+#	virsh list --all --name
+#	exit 1
+#fi
+
+## GENERAR CONFIGURACIÓN PARA UNA NUEVA VM
+if [ ! -f "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf" ]; then
+	generar_conf
+fi
+
+source "$VFIO_CONF_VM_DIR/${MAQUINA_VM}_${BOARD_NAME}.conf"
+
+for ((i=0; i<$NUM_IOMMU+1; i++)); do
+	printf -v j "%02d" $i
+	IO_SEL="IOMMU_$j"
+
+	if [[ ${!IO_SEL} == 1 ]]; then
+		if [ $VFIO_BIND -eq 1 ]; then
+			info "Grupo IOMMU $i entrando en modo VFIO."
+			/usr/local/bin/vfio-prepare $i
+		elif [ $VFIO_BIND -eq 0 ]; then
+			info "Grupo IOMMU $i saliendo de modo VFIO"
+			/usr/local/bin/vfio-release $i
+		else
+			error "Problemas al determinar el modo de funcionamiento (prepare o release)"
+			exit 1
+		fi
+	fi
+done
+
+## COSAS A HACER EN TODAS LAS MÁQUINAS AL INICIARLAS (hugepages, governor, etc.)
+info "Ejecutando otras configuraciones..."
+if [ $VFIO_BIND -eq 1 ]; then
+	vfio-alloc-hugepages
+	vfio-cpumode-perf
+elif [ $VFIO_BIND -eq 0 ]; then
+	vfio-dealloc-hugepages
+	vfio-cpumode-ondemand
+else
+	error "Problemas al determinar el modo de funcionamiento (prepare o release)"
+        exit
+fi

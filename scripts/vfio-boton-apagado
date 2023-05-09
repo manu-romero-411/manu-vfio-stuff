@@ -1,0 +1,11 @@
+#!/bin/bash
+
+MAQUINA=$(/usr/bin/virsh list --name | head -n 1)
+if [ -z $MAQUINA ]; then
+	if ! pidof xfce4-session; then
+		/sbin/poweroff
+	fi
+else
+	/usr/bin/virsh shutdown $MAQUINA
+fi
+exit

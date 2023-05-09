@@ -1,6 +1,14 @@
-#!/bin/bash
+#!/bin/bash -x
 
-## PENDIENTE: MODELAR ESTO PARA QUE PERMITA OTRAS REGLAS UDEV, OTRAS MÁQUINAS...
-if virsh list | grep retrobox | grep running; then
-	virsh attach-device retrobox /usr/local/etc/mandoXboxOne.xml
+MAQUINA=$(virsh list --name | head -n 1)
+VENDOR="$1"
+PRODID="$2"
+if [ ! -f "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml" ]; then
+	echo "<hostdev mode='subsystem' type='usb' >" > "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"
+	echo "	<source startupPolicy='optional'>" >> "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"
+	echo "	<vendor id='0x${VENDOR}'/>" >> "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"
+	echo "	<product id='0x${PRODID}'/>" >> "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"
+	echo "</source>" >> "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"
+	echo "</hostdev>" >> "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"
 fi
+virsh attach-device "$MAQUINA" "$HOME/.libvirt/vfio-usb/${VENDOR}_${PRODID}.xml"

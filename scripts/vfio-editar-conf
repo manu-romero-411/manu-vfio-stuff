@@ -1,0 +1,48 @@
+#!/bin/bash
+## SCRIPT PARA EDITAR CONFIGURACIÓN DE PASSTHROUGH A MÁQUINAS VIRTUALES
+## FECHA: martes 9 de mayo de 2023
+
+function error(){
+	RED='\033[1;31m'
+	NC='\033[0m'
+	printf "${RED}[ERROR] $@ ${NC}\n"
+}
+
+function check_root() {
+	if [[ $(whoami) != root ]]; then
+		error "No eres root"
+		exit 1
+	fi
+}
+function generar_conf(){
+        cp "${VFIO_CONF_VM_DIR}/_sample.conf" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+        sed -i "s#replaceme#${MAQUINA_VM}#g" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+        sed -i "s#replace-me2#${BOARD_NAME}#g" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+        sed -i "s#re-placeme3#${HOSTNAME}#g" "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf"
+
+}
+
+check_root
+
+if [ -z $1 ]; then
+	error "Falta un argumento"
+	exit 1
+fi
+
+MAQUINA_VM=$1
+BOARD_NAME=$(cat /sys/devices/virtual/dmi/id/board_name)
+
+if ! virsh --connect qemu:///system list --all --name | grep -w $1 >/dev/null; then
+	error "La máquina virtual $1 no existe. Prueba con:"
+	virsh list --all --name
+	exit 1
+fi
+
+VFIO_CONF_DIR=/usr/local/etc/vfio
+VFIO_CONF_VM_DIR="$VFIO_CONF_DIR/qemuhooks"
+if [ ! -f "${VFIO_CONF_VM_DIR}/${MAQUINA_VM}_${BOARD_NAME}.conf" ]; then
+        generar_conf
+fi
+
+nano "${VFIO_CONF_VM_DIR}/$1_${BOARD_NAME}.conf"
+exit $?

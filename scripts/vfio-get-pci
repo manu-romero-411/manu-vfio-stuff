@@ -1,0 +1,40 @@
+#!/bin/bash
+## DETECTAR QUÉ DRIVERS POR DEFECTO USA CADA DISPOSITIVO EN EL PC
+## NOTA: No usar mientras una máquina virtual se ejecuta,
+## ya que los dispositivos podrían quedarse pillados con
+## el driver vfio-pci, y eso es un pooblema peor que las placas de MMGM.
+## FECHA: martes 9 de mayo de 2023
+
+if pidof qemu-system-*; then
+	exit 1
+fi
+
+lspci | \
+while read line; do
+	PCI=$(echo $line | cut -c 1-7)
+	PCI_FILE="${PCI/:/_}"
+	PCI_FILE="${PCI_FILE/./_}"
+
+	DEV_BUS="$(echo $PCI_FILE | cut -d'_' -f1)"
+	DEV_SLOT="$(echo $PCI_FILE | cut -d'_' -f2)"
+	DEV_FUNC="$(echo $PCI_FILE | cut -d'_' -f3)"
+	DEV_VENDOR="$(lspci -vmmnks $PCI | grep -w Vendor | cut -c 9-)"
+	DEV_DEVICE="$(lspci -vmmnks $PCI | grep -w Device | cut -c 9-)"
+	DEV_DRIVER="$(lspci -vmmks $PCI | grep Driver | cut -c 9-)"
+	DEV_IOMMU="$(lspci -vmmks $PCI | grep IOMMUGroup | cut -c 13-)"
+
+	DEV_DIR="/usr/local/etc/vfio/devices/$DEV_IOMMU"
+	DEV_FILE="$DEV_DIR/$PCI_FILE"
+
+	mkdir -p $DEV_DIR
+
+	echo "## DEVICE $line" > $DEV_FILE
+	echo "" >> $DEV_FILE
+	echo "BUS=$DEV_BUS" >> $DEV_FILE
+	echo "SLOT=$DEV_SLOT" >> $DEV_FILE
+	echo "FUNC=$DEV_FUNC" >> $DEV_FILE
+	echo "VENDOR=$DEV_VENDOR" >> $DEV_FILE
+	echo "DEVICE=$DEV_DEVICE" >> $DEV_FILE
+	echo "DRIVER=$DEV_DRIVER" >> $DEV_FILE
+
+done

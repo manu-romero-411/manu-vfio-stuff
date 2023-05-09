@@ -1,5 +1,42 @@
 #!/bin/bash
 
+function error(){
+	RED='\033[1;31m'
+	NC='\033[0m'
+	printf "${RED}[ERROR] $@ ${NC}\n"
+}
+
+function info(){
+	BLUE='\033[1;36m'
+	NC='\033[0m'
+	printf "${BLUE}[INFO] $@ ${NC}\n"
+}
+
+
+function check_root() {
+	if [[ $(whoami) != root ]]; then
+		error "No eres root"
+		exit 1
+	fi
+}
+
+if [ -z $1 ]; then
+	error "Falta un argumento"
+	exit 1
+fi
+
+MAQUINA_VM=$1
+
+if ! virsh --connect qemu:///system list --all --name | grep -w $MAQUINA_VM >/dev/null; then
+	error "La máquina virtual $1 no existe. Prueba con:"
+	virsh list --all --name
+	exit 1
+fi
+
+if virsh list | grep "running" | grep "$1-nogpu"; then
+	virsh destroy $1-nogpu
+fi
+
 if pidof xfce4-session; then
 	xfce4-session-logout -lf
 fi
@@ -10,5 +47,5 @@ while [ $XFCESESSION != 0 ]; do
 	fi
 	sleep 0.5
 done
-echo "=== Iniciando $1 -- $(date '+%a %d/%m/%Y %H:%M:%S') ==="
+info "=== Iniciando $1 -- $(date '+%a %d/%m/%Y %H:%M:%S') ==="
 virsh start $1
